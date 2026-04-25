@@ -12,12 +12,12 @@
   --g: #6CB52F;
   --gd: #4A8A1F;
   --gs: #E8F5DA;
-  --bg: #0c160a;
-  --surface: #121d0e;
-  --surface2: #1a2914;
-  --border: #253d18;
-  --text: #ddeece;
-  --text-dim: #7a9c60;
+  --bg: #141414;
+  --surface: #1c1c1c;
+  --surface2: #242424;
+  --border: #333333;
+  --text: #e8e8e8;
+  --text-dim: #888888;
   --teal: #2196A8;
   --orange: #E07A20;
   --violet: #7B5EA7;
@@ -26,41 +26,39 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: var(--bg); color: var(--text); font-family: 'Nunito', sans-serif; min-height: 100vh; }
 
-/* HEADER */
 header {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
-  padding: 0 28px;
+  padding: 0 20px;
   display: flex;
   align-items: center;
-  gap: 14px;
-  height: 60px;
+  gap: 12px;
+  height: 56px;
   position: sticky; top: 0; z-index: 200;
 }
 .logo-badge {
-  width: 34px; height: 34px;
+  width: 30px; height: 30px;
   background: var(--g);
-  border-radius: 8px;
+  border-radius: 7px;
   display: flex; align-items: center; justify-content: center;
-  font-weight: 900; font-size: 13px; color: #fff;
+  font-weight: 900; font-size: 12px; color: #fff;
   flex-shrink: 0;
 }
-header h1 { font-size: 14px; font-weight: 900; letter-spacing: 0.3px; }
+header h1 { font-size: 13px; font-weight: 900; letter-spacing: 0.3px; }
 header .sub { font-size: 11px; color: var(--text-dim); margin-left: auto; }
 
-/* MAIN LAYOUT */
-.app { display: flex; height: calc(100vh - 60px); }
+/* MAIN LAYOUT - 3 column */
+.app { display: grid; grid-template-columns: 340px 1fr 320px; height: calc(100vh - 56px); }
 
-/* SIDEBAR */
+/* SIDEBAR LEFT */
 .sidebar {
-  width: 380px; min-width: 320px; max-width: 420px;
   background: var(--surface);
   border-right: 1px solid var(--border);
   overflow-y: auto;
   display: flex; flex-direction: column;
 }
 .sidebar-section {
-  padding: 20px 20px 0;
+  padding: 16px 16px 0;
 }
 .section-label {
   font-size: 10px; font-weight: 900;
@@ -70,21 +68,19 @@ header .sub { font-size: 11px; color: var(--text-dim); margin-left: auto; }
 }
 
 /* TOPIC INPUT */
-.topic-area {
-  position: relative;
-}
+.topic-area { position: relative; }
 .topic-textarea {
   width: 100%;
   background: var(--surface2);
   border: 1.5px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 14px;
+  border-radius: 8px;
+  padding: 11px 13px;
   color: var(--text);
   font-family: 'Nunito', sans-serif;
   font-size: 13px;
   line-height: 1.5;
   resize: none;
-  min-height: 80px;
+  min-height: 90px;
   transition: border-color .2s;
 }
 .topic-textarea:focus { outline: none; border-color: var(--g); }
@@ -94,17 +90,17 @@ header .sub { font-size: 11px; color: var(--text-dim); margin-left: auto; }
 .format-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 6px;
   margin-bottom: 4px;
 }
 .format-btn {
   background: var(--surface2);
   border: 1.5px solid var(--border);
-  border-radius: 8px;
-  padding: 10px 12px;
+  border-radius: 7px;
+  padding: 9px 10px;
   color: var(--text-dim);
   font-family: 'Nunito', sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   cursor: pointer;
   transition: all .15s;
@@ -113,17 +109,15 @@ header .sub { font-size: 11px; color: var(--text-dim); margin-left: auto; }
 }
 .format-btn:hover { border-color: var(--g); color: var(--text); }
 .format-btn.active { border-color: var(--g); color: var(--text); background: rgba(108,181,47,.1); }
-.format-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.format-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 
 /* VARIANT SELECT */
-.variant-grid {
-  display: flex; gap: 6px; flex-wrap: wrap;
-}
+.variant-grid { display: flex; gap: 5px; flex-wrap: wrap; }
 .variant-btn {
   background: var(--surface2);
   border: 1.5px solid var(--border);
   border-radius: 6px;
-  padding: 6px 12px;
+  padding: 5px 10px;
   color: var(--text-dim);
   font-family: 'Nunito', sans-serif;
   font-size: 11px; font-weight: 700;
@@ -139,35 +133,57 @@ header .sub { font-size: 11px; color: var(--text-dim); margin-left: auto; }
   background: var(--g);
   color: #fff;
   border: none;
-  border-radius: 10px;
-  padding: 13px;
+  border-radius: 8px;
+  padding: 12px;
   font-family: 'Nunito', sans-serif;
-  font-size: 14px; font-weight: 900;
+  font-size: 13px; font-weight: 900;
   cursor: pointer;
   transition: all .15s;
   display: flex; align-items: center; justify-content: center; gap: 8px;
 }
 .btn-generate:hover { background: var(--gd); }
-.btn-generate:disabled { opacity: .5; cursor: not-allowed; }
+.btn-generate:disabled { opacity: .4; cursor: not-allowed; }
 
-/* GROQ KEY */
-.api-key-row {
-  display: flex; gap: 8px; align-items: center;
-  margin-bottom: 4px;
+/* API KEY - ACCORDION */
+.api-accordion {
+  border-top: 1px solid var(--border);
+  margin-top: auto;
 }
+.api-accordion-toggle {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 12px 16px;
+  color: var(--text-dim);
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px; font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+  transition: color .15s;
+  text-align: left;
+}
+.api-accordion-toggle:hover { color: var(--text); }
+.api-accordion-body {
+  padding: 0 16px 16px;
+  display: none;
+}
+.api-accordion-body.open { display: block; }
 .api-key-input {
-  flex: 1;
+  width: 100%;
   background: var(--surface2);
   border: 1.5px solid var(--border);
-  border-radius: 8px;
-  padding: 8px 12px;
+  border-radius: 7px;
+  padding: 8px 11px;
   color: var(--text);
   font-family: 'DM Mono', monospace;
   font-size: 11px;
+  margin-bottom: 6px;
   transition: border-color .2s;
 }
 .api-key-input:focus { outline: none; border-color: var(--g); }
 .api-key-input::placeholder { color: var(--text-dim); }
+.api-hint { font-size: 10px; color: var(--text-dim); margin-bottom: 10px; }
+.api-hint a { color: var(--g); text-decoration: none; }
 
 /* FIELDS */
 .field-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 4px; }
@@ -176,22 +192,22 @@ header .sub { font-size: 11px; color: var(--text-dim); margin-left: auto; }
   width: 100%;
   background: var(--surface2);
   border: 1.5px solid var(--border);
-  border-radius: 8px;
-  padding: 9px 12px;
+  border-radius: 7px;
+  padding: 8px 11px;
   color: var(--text);
   font-family: 'Nunito', sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   transition: border-color .2s;
 }
 .field-input:focus { outline: none; border-color: var(--g); }
 .field-input::placeholder { color: var(--text-dim); }
-textarea.field-input { resize: vertical; min-height: 70px; line-height: 1.5; }
+textarea.field-input { resize: vertical; min-height: 65px; line-height: 1.5; }
 
 /* FOTO UPLOAD */
 .foto-upload {
   border: 1.5px dashed var(--border);
-  border-radius: 8px;
-  padding: 16px;
+  border-radius: 7px;
+  padding: 14px;
   text-align: center;
   cursor: pointer;
   transition: all .15s;
@@ -200,108 +216,120 @@ textarea.field-input { resize: vertical; min-height: 70px; line-height: 1.5; }
 }
 .foto-upload:hover { border-color: var(--g); color: var(--text); }
 .foto-upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-.foto-preview { width: 100%; max-height: 120px; object-fit: cover; border-radius: 6px; margin-top: 8px; }
+.foto-preview { width: 100%; max-height: 100px; object-fit: cover; border-radius: 5px; margin-top: 8px; }
 
 /* DIVIDER */
-.divider { height: 1px; background: var(--border); margin: 16px 0; }
+.divider { height: 1px; background: var(--border); margin: 14px 0; }
 
 /* STATUS */
 .status {
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 12px;
+  padding: 9px 12px;
+  border-radius: 7px;
+  font-size: 11px;
   font-weight: 700;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   display: none;
 }
-.status.loading { background: rgba(108,181,47,.12); color: var(--g); border: 1px solid rgba(108,181,47,.3); display: block; }
-.status.error { background: rgba(220,60,60,.12); color: #e06060; border: 1px solid rgba(220,60,60,.3); display: block; }
-.status.success { background: rgba(108,181,47,.12); color: var(--g); border: 1px solid rgba(108,181,47,.3); display: block; }
+.status.loading { background: rgba(108,181,47,.1); color: var(--g); border: 1px solid rgba(108,181,47,.25); display: block; }
+.status.error { background: rgba(220,60,60,.1); color: #e06060; border: 1px solid rgba(220,60,60,.25); display: block; }
+.status.success { background: rgba(108,181,47,.1); color: var(--g); border: 1px solid rgba(108,181,47,.25); display: block; }
 
-/* CAPTION AREA */
+/* MIDDLE COLUMN: PREVIEW */
+.main-content {
+  background: var(--bg);
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border-right: 1px solid var(--border);
+}
+
+/* RIGHT COLUMN: CAPTION */
+.caption-col {
+  background: var(--surface);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  gap: 12px;
+}
+.caption-col-label {
+  font-size: 10px; font-weight: 900;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--text-dim);
+}
 .caption-box {
   background: var(--surface2);
   border: 1.5px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 14px;
-  font-size: 12px;
-  line-height: 1.7;
+  border-radius: 8px;
+  padding: 14px;
+  font-size: 13px;
+  line-height: 1.75;
   color: var(--text);
   white-space: pre-wrap;
   font-family: 'Nunito', sans-serif;
-  min-height: 100px;
-  display: none;
+  flex: 1;
+  min-height: 120px;
 }
-.caption-box.visible { display: block; }
+.caption-empty {
+  color: var(--text-dim);
+  font-size: 12px;
+  text-align: center;
+  padding: 40px 0;
+  font-style: italic;
+}
 .btn-copy {
   width: 100%;
-  background: transparent;
+  background: rgba(108,181,47,.12);
   border: 1.5px solid var(--g);
   color: var(--g);
   border-radius: 8px;
-  padding: 9px;
+  padding: 10px;
   font-family: 'Nunito', sans-serif;
   font-size: 12px; font-weight: 900;
   cursor: pointer;
   transition: all .15s;
-  display: none;
 }
-.btn-copy:hover { background: rgba(108,181,47,.1); }
-.btn-copy.visible { display: block; }
-.btn-copy.copied { background: rgba(108,181,47,.2); }
-
-/* MAIN CONTENT */
-.main-content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
+.btn-copy:hover { background: rgba(108,181,47,.2); }
+.btn-copy.copied { background: rgba(108,181,47,.3); }
 
 /* PREVIEW AREA */
 .preview-header {
   display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 .preview-title {
-  font-size: 13px; font-weight: 900; color: var(--text-dim);
+  font-size: 12px; font-weight: 900; color: var(--text-dim);
   text-transform: uppercase; letter-spacing: 1px;
 }
 
 /* SLIDES GRID */
 .slides-grid {
   display: flex;
-  gap: 28px;
+  gap: 20px;
   flex-wrap: wrap;
   align-items: flex-start;
 }
-.slide-card {
-  display: flex; flex-direction: column; gap: 12px;
-}
+.slide-card { display: flex; flex-direction: column; gap: 10px; }
 .slide-card-label {
   font-size: 10px; font-weight: 700; color: var(--text-dim);
   text-transform: uppercase; letter-spacing: 1px;
 }
 .slide-wrapper {
   position: relative;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+  box-shadow: 0 6px 24px rgba(0,0,0,.5);
 }
-.slide-wrapper iframe {
-  display: block;
-  border: none;
-  pointer-events: none;
-}
+.slide-wrapper iframe { display: block; border: none; pointer-events: none; }
 .btn-download {
   width: 100%;
-  background: var(--surface);
+  background: var(--surface2);
   border: 1.5px solid var(--border);
   color: var(--text);
-  border-radius: 8px;
-  padding: 9px;
+  border-radius: 7px;
+  padding: 8px;
   font-family: 'Nunito', sans-serif;
   font-size: 11px; font-weight: 700;
   cursor: pointer;
@@ -309,6 +337,19 @@ textarea.field-input { resize: vertical; min-height: 70px; line-height: 1.5; }
   display: flex; align-items: center; justify-content: center; gap: 6px;
 }
 .btn-download:hover { border-color: var(--g); color: var(--g); }
+.btn-download-all {
+  background: rgba(108,181,47,.1);
+  border: 1.5px solid var(--g);
+  color: var(--g);
+  border-radius: 7px;
+  padding: 9px 14px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px; font-weight: 900;
+  cursor: pointer;
+  transition: all .15s;
+  display: flex; align-items: center; gap: 6px;
+}
+.btn-download-all:hover { background: rgba(108,181,47,.2); }
 
 /* EMPTY STATE */
 .empty-state {
@@ -317,19 +358,19 @@ textarea.field-input { resize: vertical; min-height: 70px; line-height: 1.5; }
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
   color: var(--text-dim);
   text-align: center;
-  padding: 60px;
+  padding: 60px 40px;
 }
-.empty-icon { font-size: 48px; opacity: .4; }
-.empty-title { font-size: 16px; font-weight: 900; }
-.empty-sub { font-size: 13px; max-width: 300px; line-height: 1.5; }
+.empty-icon { font-size: 40px; opacity: .35; }
+.empty-title { font-size: 15px; font-weight: 900; }
+.empty-sub { font-size: 12px; max-width: 260px; line-height: 1.6; }
 
 /* SPINNER */
 .spinner {
   display: inline-block;
-  width: 14px; height: 14px;
+  width: 13px; height: 13px;
   border: 2px solid rgba(255,255,255,.3);
   border-top-color: #fff;
   border-radius: 50%;
@@ -337,13 +378,28 @@ textarea.field-input { resize: vertical; min-height: 70px; line-height: 1.5; }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* SIDEBAR PADDING BOTTOM */
-.sidebar-bottom { padding: 20px; }
-
 /* SCROLLBAR */
-::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* SIDEBAR BOTTOM PADDING */
+.sidebar-bottom { padding: 16px; }
+
+/* MOBILE */
+@media (max-width: 900px) {
+  .app { display: block; height: auto; }
+  .sidebar { width: 100%; max-width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+  .main-content { border-right: none; padding: 16px; }
+  .caption-col { padding: 16px; }
+  .btn-generate-sticky {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    padding: 12px 16px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+  }
+}
 </style>
 </head>
 <body>
@@ -355,48 +411,20 @@ textarea.field-input { resize: vertical; min-height: 70px; line-height: 1.5; }
 </header>
 
 <div class="app">
-  <!-- SIDEBAR -->
+  <!-- LEFT SIDEBAR -->
   <div class="sidebar">
-    
-    <!-- API KEY -->
-    <div class="sidebar-section" style="padding-top:20px">
-      <div class="section-label">Groq API Key</div>
-      <div class="api-key-row">
-        <input type="password" class="api-key-input" id="groqKey" placeholder="gsk_..." />
-      </div>
-      <div style="font-size:10px; color:var(--text-dim); margin-top:4px">
-        Einmalig eingeben — wird nur im Browser gespeichert.
-        <a href="https://console.groq.com/keys" target="_blank" style="color:var(--g); text-decoration:none">Key holen ↗</a>
-      </div>
-    </div>
-
-    <!-- RENDER SERVER -->
-    <div class="sidebar-section" style="margin-top:14px">
-      <div class="section-label">PNG-Export Server</div>
-      <input type="text" class="api-key-input" id="renderUrl"
-        placeholder="https://abz-render-server.up.railway.app"
-        style="width:100%; margin-bottom:6px" />
-      <input type="password" class="api-key-input" id="renderToken"
-        placeholder="Geheimer Token" style="width:100%" />
-      <div style="font-size:10px; color:var(--text-dim); margin-top:4px">
-        Railway-Server URL + Token für 1080×1350px PNG-Export.
-      </div>
-    </div>
-
-
-    <div class="divider" style="margin: 16px 0 0"></div>
 
     <!-- TOPIC INPUT -->
-    <div class="sidebar-section">
-      <div class="section-label">Thema / Roheingabe</div>
+    <div class="sidebar-section" style="padding-top:16px">
+      <div class="section-label">Thema</div>
       <div class="topic-area">
-        <textarea class="topic-textarea" id="topicInput" rows="3"
+        <textarea class="topic-textarea" id="topicInput" rows="4"
           placeholder="z.B. 15.07. Mi 🔵 Wusstet ihr schon? #11 – Der Name 'Bobritzsch' kommt vom slawischen Wort für Biber"></textarea>
       </div>
     </div>
 
     <!-- FORMAT -->
-    <div class="sidebar-section" style="margin-top:16px">
+    <div class="sidebar-section" style="margin-top:14px">
       <div class="section-label">Format</div>
       <div class="format-grid" id="formatGrid">
         <button class="format-btn" data-format="momo" onclick="selectFormat(this)">
@@ -429,7 +457,7 @@ textarea.field-input { resize: vertical; min-height: 70px; line-height: 1.5; }
     </div>
 
     <!-- GENERATE BUTTON -->
-    <div class="sidebar-section" style="margin-top:16px">
+    <div class="sidebar-section" style="margin-top:14px">
       <div class="status" id="status"></div>
       <button class="btn-generate" id="btnGenerate" onclick="generateContent()" disabled>
         <span id="btnIcon">✨</span>
@@ -438,43 +466,67 @@ textarea.field-input { resize: vertical; min-height: 70px; line-height: 1.5; }
     </div>
 
     <!-- FIELDS (filled by AI) -->
-    <div class="sidebar-section" style="margin-top:16px" id="fieldsSection">
-      <div class="divider" style="margin-top:0; margin-bottom:16px"></div>
+    <div class="sidebar-section" style="margin-top:14px" id="fieldsSection">
+      <div class="divider" style="margin-top:0; margin-bottom:14px"></div>
       <div class="section-label">Template-Felder</div>
       <div id="fieldsContainer" class="field-group"></div>
     </div>
 
-    <!-- PREVIEW BUTTON -->
-    <div class="sidebar-section" style="margin-top:12px" id="previewBtnSection" style="display:none">
+    <!-- PREVIEW REFRESH BUTTON -->
+    <div class="sidebar-section" style="margin-top:10px" id="previewBtnSection" style="display:none">
       <button class="btn-generate" id="btnPreview" onclick="renderPreviews()" style="background: var(--surface2); border: 1.5px solid var(--g); color: var(--g)">
-        👁 Vorschau aktualisieren
+        👁 Änderungen anwenden
       </button>
     </div>
 
-    <!-- CAPTION -->
-    <div class="sidebar-section" style="margin-top:16px" id="captionSection">
-      <div class="divider" style="margin-top:0; margin-bottom:16px"></div>
-      <div class="section-label">Instagram Caption</div>
-      <div class="caption-box" id="captionBox"></div>
-      <button class="btn-copy" id="btnCopy" onclick="copyCaption()">📋 Caption kopieren</button>
+    <!-- API ACCORDION -->
+    <div class="api-accordion">
+      <button class="api-accordion-toggle" onclick="toggleApiAccordion()">
+        ⚙️ API-Einstellungen
+        <span id="accordionArrow" style="margin-left:auto">▾</span>
+      </button>
+      <div class="api-accordion-body" id="apiAccordionBody">
+        <div class="section-label" style="margin-bottom:6px">Groq API Key</div>
+        <input type="password" class="api-key-input" id="groqKey" placeholder="gsk_..." />
+        <div class="api-hint">Einmalig eingeben — wird lokal gespeichert.
+          <a href="https://console.groq.com/keys" target="_blank">Key holen ↗</a>
+        </div>
+        <div class="section-label" style="margin-bottom:6px">PNG-Export Server URL</div>
+        <input type="text" class="api-key-input" id="renderUrl"
+          placeholder="https://abz-render-server.up.railway.app" />
+        <div class="section-label" style="margin-bottom:6px;margin-top:6px">Server Token</div>
+        <input type="password" class="api-key-input" id="renderToken"
+          placeholder="Geheimer Token" />
+        <div class="api-hint">Railway-Server für 1080×1350px PNG-Export.</div>
+      </div>
     </div>
 
     <div class="sidebar-bottom"></div>
   </div>
 
-  <!-- MAIN CONTENT -->
+  <!-- MIDDLE: PREVIEW -->
   <div class="main-content" id="mainContent">
     <div class="empty-state" id="emptyState">
       <div class="empty-icon">🌿</div>
       <div class="empty-title">Bereit für Content</div>
-      <div class="empty-sub">Wähle ein Format, gib dein Thema ein und lass die KI den perfekten Instagram-Post erstellen.</div>
+      <div class="empty-sub">Format wählen, Thema eingeben und KI den Post erstellen lassen.</div>
     </div>
     <div id="previewArea" style="display:none">
       <div class="preview-header">
         <div class="preview-title" id="previewTitle">Vorschau</div>
+        <button class="btn-download-all" id="btnDownloadAll" onclick="downloadAllSlides()" style="display:none">
+          ⬇ Alle PNGs laden
+        </button>
       </div>
       <div class="slides-grid" id="slidesGrid"></div>
     </div>
+  </div>
+
+  <!-- RIGHT: CAPTION -->
+  <div class="caption-col">
+    <div class="caption-col-label">Instagram Caption</div>
+    <div class="caption-box" id="captionBox"><span class="caption-empty">Caption erscheint hier nach der KI-Generierung…</span></div>
+    <button class="btn-copy" id="btnCopy" onclick="copyCaption()">📋 Caption kopieren</button>
   </div>
 </div>
 
@@ -744,12 +796,11 @@ async function generateContent() {
     
     // Fill caption
     captionText = result.caption || '';
+    // Strip any HTML tags that might have slipped in
+    captionText = captionText.replace(/<[^>]+>/g, '');
     const captionBox = document.getElementById('captionBox');
-    const btnCopy = document.getElementById('btnCopy');
     if (captionText) {
       captionBox.textContent = captionText;
-      captionBox.classList.add('visible');
-      btnCopy.classList.add('visible');
     }
     
     showStatus('success', '✓ Felder ausgefüllt — Vorschau wird geladen');
@@ -887,22 +938,30 @@ SPRACHSTIL für Caption:
 - Gendern: "Anwärterinnen und Anwärter" (ausgeschrieben, kein Genderstern)
 - Wir-Perspektive
 - Schlusssatz immer kurz und pointiert
-- Exakt 3 Hashtags am Ende, kleingeschrieben, erster immer #abzbobritzsch
+- Exakt 4 Hashtags am Ende, CamelCase, erster IMMER #ABZBobritzsch (z.B. #ABZBobritzsch #Steueranwärter #Laufbahnprüfung #Sachsen)
+
+CAPTION-FORMAT — genau wie in diesen Beispielen:
+- Erste Zeile: Titel-Hook mit 1–2 Emojis am Zeilenende
+- Nach Titel-Hook: immer eine Leerzeile (\n\n)
+- Nach jedem inhaltlichen Block: immer eine Leerzeile (\n\n)
+- Vor den Hashtags: immer eine Leerzeile (\n\n)
+- Emojis strukturieren Inhalte (am Zeilenende oder vor Listenpunkten)
+- Schlusssatz: kurz, emotional, mit Emoji am Ende
+- Nie mehr als 3 Sätze ohne Leerzeile
+- VERBOTEN: HTML-Tags wie <strong>, <em>, <br> etc. — NUR reiner Text mit Emojis
 
 CAPTION-STRUKTUR:
-[Emoji][Titel-Hook]
+[Titel-Hook] [Emoji1] [Emoji2]
 
-[Erster Gedanke – 1 Zeile]
+[Erster Satz — 1-2 Zeilen]
 
-[Emoji] [Themenblock 1]
-[1-2 Sätze]
+[Emoji] [Themenblock 1 — 1-2 Sätze]
 
-[Emoji] [Themenblock 2]
-[...]
+[Emoji] [Themenblock 2 — 1-2 Sätze]
 
-[Schlusssatz]
+[Emotionaler Schlusssatz] [Emoji]
 
-#abzbobritzsch #[thema1] #[thema2]
+#ABZBobritzsch #[ThemaEins] #[ThemaZwei] #[ThemaDrei]
 
 Du antwortest NUR mit gültigem JSON, kein anderer Text außenrum. WICHTIG: Innerhalb von JSON-Strings niemals echte Zeilenumbrüche — immer \\n als escaped Sequenz schreiben.`;
 }
@@ -930,10 +989,11 @@ Antworte AUSSCHLIESSLICH mit diesem JSON:
 
 Wichtig für die Felder:
 - ZITAT: prägnant, 1-2 Zeilen max
-- FAKT: kann einfaches HTML enthalten (<strong>Wort</strong>) für Betonung
-- TEXT: fließend, 2-4 Sätze
+- FAKT: informativer Text, KEIN HTML — nur reinen Text mit Emojis wenn passend
+- TEXT: fließend, 2-4 Sätze, kein HTML
 - FAZIT/KOMMENTAR: kurz und prägnant, 1 Zeile
-- Alle Texte auf Deutsch, ABZ-Kontext`;
+- Alle Texte auf Deutsch, ABZ-Kontext
+- NIEMALS HTML-Tags in irgendeinem Feld verwenden`;
 }
 
 function getFieldDescription(field) {
@@ -941,7 +1001,7 @@ function getFieldDescription(field) {
     ZITAT: 'Inspirierendes Zitat zum Thema, kurz und prägnant',
     AUTOR: 'Name der Person hinter dem Zitat',
     EMOJI: 'Ein passendes Emoji zum Thema',
-    FAKT: 'Interessanter Fakt als Text, darf <strong>Wort</strong> für Betonung enthalten',
+    FAKT: 'Interessanter Fakt als reiner Text, kein HTML',
     KOMMENTAR: 'Kurze witzige oder nachdenkliche Zeile zum Fakt',
     TITEL: 'Prägnanter Titel des Tipps/Themas',
     ENTFERNUNG: 'z.B. ca. 25 km entfernt',
@@ -978,6 +1038,10 @@ function renderPreviews() {
   
   document.getElementById('previewTitle').textContent = 
     cfg.label + ' · Variante ' + activeVariant;
+  
+  // Show download-all button only when multiple slides
+  const dlAll = document.getElementById('btnDownloadAll');
+  if (dlAll) dlAll.style.display = slideIds.length > 1 ? 'flex' : 'none';
   
   slideIds.forEach((slideId, idx) => {
     const slideHtml = buildSlideHtml(slideId);
@@ -1131,6 +1195,25 @@ async function copyCaption() {
     btn.textContent = '📋 Caption kopieren';
     btn.classList.remove('copied');
   }, 2000);
+}
+
+// ── ACCORDION ─────────────────────────────────────────────────────────────
+function toggleApiAccordion() {
+  const body = document.getElementById('apiAccordionBody');
+  const arrow = document.getElementById('accordionArrow');
+  const isOpen = body.classList.toggle('open');
+  arrow.textContent = isOpen ? '▴' : '▾';
+}
+
+// ── DOWNLOAD ALL SLIDES ────────────────────────────────────────────────────
+async function downloadAllSlides() {
+  if (!activeFormat || !activeVariant) return;
+  const cfg = FORMAT_CONFIG[activeFormat];
+  const slideIds = cfg.variants[activeVariant].slides;
+  for (let i = 0; i < slideIds.length; i++) {
+    await downloadSlide(slideIds[i], i + 1);
+    if (slideIds.length > 1) await new Promise(r => setTimeout(r, 500));
+  }
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────────────
