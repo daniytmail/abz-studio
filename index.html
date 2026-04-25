@@ -370,24 +370,9 @@ textarea.field-input { resize: vertical; min-height: 65px; line-height: 1.5; }
 /* MOBILE */
 @media (max-width: 900px) {
   .app { display: flex; flex-direction: column; height: auto; }
-  .sidebar {
-    width: 100%; max-width: 100%; border-right: none;
-    border-bottom: 1px solid var(--border);
-    display: flex; flex-direction: column;
-  }
-  .main-content { border-right: none; padding: 16px; order: 2; }
-  .caption-col { padding: 16px; order: 3; border-top: 1px solid var(--border); }
-  /* Mobile-Reihenfolge der Sidebar-Elemente via order */
-  #mob-branding   { order: 0; }
-  #mob-topic      { order: 1; }
-  #mob-format     { order: 2; }
-  #mob-variant    { order: 3; }
-  #mob-generate   { order: 4; }
-  #mob-preview-mobile { order: 5; display: block !important; }
-  #mob-caption-mobile { order: 6; display: block !important; }
-  #mob-fields     { order: 7; }
-  #mob-previewbtn { order: 8; }
-  #mob-api        { order: 9; }
+  .sidebar { width: 100%; max-width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+  .main-content { display: none; } /* Desktop-Vorschau auf Mobile verstecken */
+  .caption-col { display: none; } /* Desktop-Caption auf Mobile verstecken */
 }
 </style>
 </head>
@@ -1255,6 +1240,34 @@ function showStatus(type, msg) {
   el.style.display = 'block';
   if (type === 'success') setTimeout(() => { el.style.display = 'none'; }, 4000);
 }
+
+// ── MOBILE DOM-REORDER ────────────────────────────────────────────────────
+function applyMobileOrder() {
+  if (window.innerWidth > 900) return;
+  const sidebar = document.querySelector('.sidebar');
+  if (!sidebar) return;
+  // Gewünschte Reihenfolge der IDs auf Mobile
+  const order = [
+    'mob-branding',
+    'mob-topic',
+    'mob-format',
+    'mob-variant',
+    'mob-generate',
+    'mob-preview-mobile',
+    'mob-caption-mobile',
+    'mob-fields',
+    'mob-previewbtn',
+    'mob-api'
+  ];
+  // sidebar-bottom ans Ende
+  const bottom = sidebar.querySelector('.sidebar-bottom');
+  order.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) sidebar.appendChild(el);
+  });
+  if (bottom) sidebar.appendChild(bottom);
+}
+window.addEventListener('DOMContentLoaded', applyMobileOrder);
 </script>
 </body>
 </html>
