@@ -1036,32 +1036,77 @@ function getPrefix(slideId) {
   return prefixMap[slideId] || slideId;
 }
 
-// ── PNG DOWNLOAD ──────────────────────────────────────────────────────────
+// ── PNG DOWNLOAD (Browser-nativ via iframe + canvas) ─────────────────────
 async function downloadSlide(slideId, slideNum) {
-  const html = buildSlideHtml(slideId);
-  
-  showStatus('loading', 'PNG wird erstellt...');
+  showStatus('loading', 'PNG wird erstellt… (ca. 3 Sekunden)');
   
   try {
-    // Use Netlify function if available, else show notice
-    const res = await fetch('/.netlify/functions/render', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ html, width: 1080, height: 1350 })
+    const html = buildSlideHtml(slideId);
+    const EXPORT_W = 1080;
+    const EXPORT_H = 1350;
+    const PREVIEW_W = 300;
+    const PREVIEW_H = 375;
+    const SCALE = EXPORT_W / PREVIEW_W; // 3.6×
+
+    // 1. Render in hidden iframe at preview size (fonts already loaded)
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = `position:fixed;left:-9999px;top:-9999px;width:${PREVIEW_W}px;height:${PREVIEW_H}px;border:none;`;
+    document.body.appendChild(iframe);
+
+    await new Promise(resolve => {
+      iframe.onload = resolve;
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      doc.open();
+      doc.write(html);
+      doc.close();
+      // fallback if onload already fired
+      setTimeout(resolve, 2500);
     });
-    
-    if (!res.ok) throw new Error('Render-Funktion nicht verfügbar');
-    
-    const data = await res.json();
+
+    // Extra wait for fonts & images inside iframe
+    await new Promise(r => setTimeout(r, 1200));
+
+    // 2. Use html2canvas on the iframe body
+    const iframeWin = iframe.contentWindow;
+    const iframeDoc = iframe.contentDocument;
+
+    // Inject html2canvas into the iframe
+    await new Promise((resolve, reject) => {
+      const script = iframeDoc.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+      script.onload = resolve;
+      script.onerror = reject;
+      iframeDoc.head.appendChild(script);
+    });
+
+    await new Promise(r => setTimeout(r, 300));
+
+    // Capture at preview size, then scale up
+    const canvas = await iframeWin.html2canvas(iframeDoc.body, {
+      width: PREVIEW_W,
+      height: PREVIEW_H,
+      scale: SCALE,  // renders at 1080×1350
+      useCORS: true,
+      allowTaint: true,
+      logging: false,
+      backgroundColor: null
+    });
+
+    document.body.removeChild(iframe);
+
+    // 3. Download
     const link = document.createElement('a');
-    link.href = 'data:image/png;base64,' + data.png;
-    link.download = `abz_slide_${slideId}_${Date.now()}.png`;
+    const format = activeFormat || 'slide';
+    const variant = activeVariant || '';
+    link.download = `abz_${format}${variant}_slide${slideNum}_${Date.now()}.png`;
+    link.href = canvas.toDataURL('image/png');
     link.click();
-    showStatus('success', '✓ PNG heruntergeladen!');
-    
+
+    showStatus('success', '✓ PNG heruntergeladen! (1080×1350px)');
+
   } catch(e) {
-    // Fallback: offer to print/screenshot
-    showStatus('error', 'PNG-Export benötigt Netlify-Deployment. Im Browser: Vorschau rechtsklicken → Bild speichern, oder als Screenshot exportieren.');
+    console.error('PNG export error:', e);
+    showStatus('error', 'Export fehlgeschlagen: ' + e.message + ' — Rechtsklick auf Vorschau → Bild speichern als Fallback.');
   }
 }
 
