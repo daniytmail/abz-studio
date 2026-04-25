@@ -769,12 +769,80 @@ async function callGroqForFields(key, topic) {
   const data = await response.json();
   const text = data.choices[0].message.content;
   
-  // Parse JSON from response
-  const jsonMatch = text.match(/```json\s*([\s\S]*?)```/) || text.match(/{[\s\S]*}/);
-  if (!jsonMatch) throw new Error('KI hat kein gültiges JSON zurückgegeben');
+  // Robust JSON extraction and sanitization
+  let jsonStr = null;
   
-  const parsed = JSON.parse(jsonMatch[jsonMatch.length - 1] || jsonMatch[1]);
+  // Try to extract from ```json ... ``` block first
+  const fenceMatch = text.match(/```json\s*([\s\S]*?)```/);
+  if (fenceMatch) {
+    jsonStr = fenceMatch[1].trim();
+  } else {
+    // Fall back: find outermost { ... }
+    const start = text.indexOf('{');
+    const end = text.lastIndexOf('}');
+    if (start !== -1 && end !== -1) {
+      jsonStr = text.slice(start, end + 1);
+    }
+  }
+  
+  if (!jsonStr) throw new Error('KI hat kein gültiges JSON zurückgegeben. Bitte nochmal versuchen.');
+  
+  // Sanitize: fix unescaped control characters inside JSON string values
+  // Replace literal newlines/tabs inside string values with escaped versions
+  jsonStr = sanitizeJsonString(jsonStr);
+  
+  let parsed;
+  try {
+    parsed = JSON.parse(jsonStr);
+  } catch(parseErr) {
+    console.error('JSON parse error:', parseErr);
+    console.error('Raw JSON string:', jsonStr.slice(0, 500));
+    throw new Error('KI-Antwort konnte nicht verarbeitet werden. Bitte nochmal versuchen.');
+  }
   return parsed;
+}
+
+function sanitizeJsonString(str) {
+  // Replace literal newlines/carriage returns/tabs inside JSON string values
+  // We do this by processing character by character within string context
+  let result = '';
+  let inString = false;
+  let escaped = false;
+  
+  for (let i = 0; i < str.length; i++) {
+    const ch = str[i];
+    
+    if (escaped) {
+      result += ch;
+      escaped = false;
+      continue;
+    }
+    
+    if (ch === '\\') {
+      escaped = true;
+      result += ch;
+      continue;
+    }
+    
+    if (ch === '"') {
+      inString = !inString;
+      result += ch;
+      continue;
+    }
+    
+    if (inString) {
+      // Replace literal control characters with escaped versions
+      if (ch === '\n') { result += '\\n'; continue; }
+      if (ch === '\r') { result += '\\r'; continue; }
+      if (ch === '\t') { result += '\\t'; continue; }
+      // Remove other control chars (0x00-0x1f except those above)
+      const code = ch.charCodeAt(0);
+      if (code < 0x20) { continue; }
+    }
+    
+    result += ch;
+  }
+  return result;
 }
 
 function buildSystemPrompt() {
@@ -808,7 +876,7 @@ CAPTION-STRUKTUR:
 
 #abzbobritzsch #[thema1] #[thema2]
 
-Du antwortest NUR mit gültigem JSON, kein anderer Text außenrum.`;
+Du antwortest NUR mit gültigem JSON, kein anderer Text außenrum. WICHTIG: Innerhalb von JSON-Strings niemals echte Zeilenumbrüche — immer \\n als escaped Sequenz schreiben.`;
 }
 
 function buildUserPrompt(topic, fields, formatLabel, variant) {
@@ -828,7 +896,7 @@ Antworte AUSSCHLIESSLICH mit diesem JSON:
   "fields": {
     ${fieldDescriptions}
   },
-  "caption": "Die fertige Caption hier als String (mit echten Zeilenumbrüchen \\n)"
+  "caption": "Die fertige Caption. Zeilenumbrüche ZWINGEND als \\n kodieren, niemals echte Zeilenumbrüche im JSON!"
 }
 \`\`\`
 
