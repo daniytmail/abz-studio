@@ -26,29 +26,10 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: var(--bg); color: var(--text); font-family: 'Nunito', sans-serif; min-height: 100vh; }
 
-header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 0 20px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  height: 56px;
-  position: sticky; top: 0; z-index: 200;
-}
-.logo-badge {
-  width: 30px; height: 30px;
-  background: var(--g);
-  border-radius: 7px;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 900; font-size: 12px; color: #fff;
-  flex-shrink: 0;
-}
-header h1 { font-size: 13px; font-weight: 900; letter-spacing: 0.3px; }
-header .sub { font-size: 11px; color: var(--text-dim); margin-left: auto; }
+
 
 /* MAIN LAYOUT - 3 column */
-.app { display: grid; grid-template-columns: 340px 1fr 320px; height: calc(100vh - 56px); }
+.app { display: grid; grid-template-columns: 340px 1fr 320px; height: 100vh; }
 
 /* SIDEBAR LEFT */
 .sidebar {
@@ -388,34 +369,42 @@ textarea.field-input { resize: vertical; min-height: 65px; line-height: 1.5; }
 
 /* MOBILE */
 @media (max-width: 900px) {
-  .app { display: block; height: auto; }
-  .sidebar { width: 100%; max-width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
-  .main-content { border-right: none; padding: 16px; }
-  .caption-col { padding: 16px; }
-  .btn-generate-sticky {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    padding: 12px 16px;
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    z-index: 100;
+  .app { display: flex; flex-direction: column; height: auto; }
+  .sidebar {
+    width: 100%; max-width: 100%; border-right: none;
+    border-bottom: 1px solid var(--border);
+    display: flex; flex-direction: column;
   }
+  .main-content { border-right: none; padding: 16px; order: 2; }
+  .caption-col { padding: 16px; order: 3; border-top: 1px solid var(--border); }
+  /* Mobile-Reihenfolge der Sidebar-Elemente via order */
+  #mob-branding   { order: 0; }
+  #mob-topic      { order: 1; }
+  #mob-format     { order: 2; }
+  #mob-variant    { order: 3; }
+  #mob-generate   { order: 4; }
+  #mob-preview-mobile { order: 5; display: block !important; }
+  #mob-caption-mobile { order: 6; display: block !important; }
+  #mob-fields     { order: 7; }
+  #mob-previewbtn { order: 8; }
+  #mob-api        { order: 9; }
 }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo-badge">ABZ</div>
-  <h1>Instagram Content Studio</h1>
-  <span class="sub">@abz_bobritzsch</span>
-</header>
-
 <div class="app">
   <!-- LEFT SIDEBAR -->
   <div class="sidebar">
 
+    <!-- BRANDING -->
+    <div id="mob-branding" style="padding: 12px 16px 0; display:flex; align-items:center; gap:8px;">
+      <div style="width:22px;height:22px;background:var(--g);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;flex-shrink:0">ABZ</div>
+      <span style="font-size:10px;font-weight:700;color:var(--text-dim);letter-spacing:0.5px">AB Gen</span>
+    </div>
+
     <!-- TOPIC INPUT -->
-    <div class="sidebar-section" style="padding-top:16px">
+    <div id="mob-topic" class="sidebar-section" style="padding-top:10px">
       <div class="section-label">Thema</div>
       <div class="topic-area">
         <textarea class="topic-textarea" id="topicInput" rows="4"
@@ -424,7 +413,7 @@ textarea.field-input { resize: vertical; min-height: 65px; line-height: 1.5; }
     </div>
 
     <!-- FORMAT -->
-    <div class="sidebar-section" style="margin-top:14px">
+    <div id="mob-format" class="sidebar-section" style="margin-top:14px">
       <div class="section-label">Format</div>
       <div class="format-grid" id="formatGrid">
         <button class="format-btn" data-format="momo" onclick="selectFormat(this)">
@@ -451,36 +440,50 @@ textarea.field-input { resize: vertical; min-height: 65px; line-height: 1.5; }
     </div>
 
     <!-- VARIANT -->
-    <div class="sidebar-section" style="margin-top:12px" id="variantSection" style="display:none">
+    <div id="mob-variant" class="sidebar-section" style="margin-top:12px" id="variantSection" style="display:none">
       <div class="section-label">Variante</div>
       <div class="variant-grid" id="variantGrid"></div>
     </div>
 
     <!-- GENERATE BUTTON -->
-    <div class="sidebar-section" style="margin-top:14px">
+    <div id="mob-generate" class="sidebar-section" style="margin-top:14px">
       <div class="status" id="status"></div>
       <button class="btn-generate" id="btnGenerate" onclick="generateContent()" disabled>
         <span id="btnIcon">✨</span>
-        <span id="btnText">KI-Inhalt erstellen</span>
+        <span id="btnText">Generieren</span>
       </button>
     </div>
 
+    <!-- MOBILE PREVIEW PLACEHOLDER (nur Mobile, nach Generieren) -->
+    <div id="mob-preview-mobile" class="sidebar-section" style="margin-top:14px; display:none">
+      <div class="divider" style="margin-top:0; margin-bottom:14px"></div>
+      <div id="mobilePreviewContainer"></div>
+    </div>
+
+    <!-- MOBILE CAPTION (nur Mobile) -->
+    <div id="mob-caption-mobile" class="sidebar-section" style="margin-top:14px; display:none">
+      <div class="divider" style="margin-top:0; margin-bottom:14px"></div>
+      <div class="caption-col-label">Instagram Caption</div>
+      <div class="caption-box" id="captionBoxMobile" style="min-height:80px; margin-top:8px"><span class="caption-empty">Caption erscheint hier…</span></div>
+      <button class="btn-copy" style="margin-top:8px" onclick="copyCaption()">📋 Caption kopieren</button>
+    </div>
+
     <!-- FIELDS (filled by AI) -->
-    <div class="sidebar-section" style="margin-top:14px" id="fieldsSection">
+    <div id="mob-fields" class="sidebar-section" style="margin-top:14px" id="fieldsSection">
       <div class="divider" style="margin-top:0; margin-bottom:14px"></div>
       <div class="section-label">Template-Felder</div>
       <div id="fieldsContainer" class="field-group"></div>
     </div>
 
     <!-- PREVIEW REFRESH BUTTON -->
-    <div class="sidebar-section" style="margin-top:10px" id="previewBtnSection" style="display:none">
+    <div id="mob-previewbtn" class="sidebar-section" style="margin-top:10px" id="previewBtnSection" style="display:none">
       <button class="btn-generate" id="btnPreview" onclick="renderPreviews()" style="background: var(--surface2); border: 1.5px solid var(--g); color: var(--g)">
         👁 Änderungen anwenden
       </button>
     </div>
 
     <!-- API ACCORDION -->
-    <div class="api-accordion">
+    <div id="mob-api" class="api-accordion">
       <button class="api-accordion-toggle" onclick="toggleApiAccordion()">
         ⚙️ API-Einstellungen
         <span id="accordionArrow" style="margin-left:auto">▾</span>
@@ -796,11 +799,15 @@ async function generateContent() {
     
     // Fill caption
     captionText = result.caption || '';
-    // Strip any HTML tags that might have slipped in
     captionText = captionText.replace(/<[^>]+>/g, '');
     const captionBox = document.getElementById('captionBox');
     if (captionText) {
       captionBox.textContent = captionText;
+      // Mobile caption
+      const mCap = document.getElementById('captionBoxMobile');
+      if (mCap) { mCap.textContent = captionText; }
+      const mCapSec = document.getElementById('mob-caption-mobile');
+      if (mCapSec) mCapSec.style.display = 'block';
     }
     
     showStatus('success', '✓ Felder ausgefüllt — Vorschau wird geladen');
@@ -811,7 +818,7 @@ async function generateContent() {
   } finally {
     btn.disabled = false;
     document.getElementById('btnIcon').textContent = '✨';
-    document.getElementById('btnText').textContent = 'KI-Inhalt erstellen';
+    document.getElementById('btnText').textContent = 'Generieren';
   }
 }
 
@@ -1024,6 +1031,7 @@ function getFieldDescription(field) {
 // ── RENDER PREVIEW ────────────────────────────────────────────────────────
 function renderPreviews() {
   if (!activeFormat || !activeVariant) return;
+  const isMobile = window.innerWidth <= 900;
   
   const cfg = FORMAT_CONFIG[activeFormat];
   const variantCfg = cfg.variants[activeVariant];
@@ -1043,6 +1051,13 @@ function renderPreviews() {
   const dlAll = document.getElementById('btnDownloadAll');
   if (dlAll) dlAll.style.display = slideIds.length > 1 ? 'flex' : 'none';
   
+  // Show mobile preview section
+  const mobPrev = document.getElementById('mob-preview-mobile');
+  if (mobPrev) {
+    mobPrev.style.display = 'block';
+    document.getElementById('mobilePreviewContainer').innerHTML = '';
+  }
+
   slideIds.forEach((slideId, idx) => {
     const slideHtml = buildSlideHtml(slideId);
     
@@ -1073,6 +1088,22 @@ function renderPreviews() {
     card.appendChild(wrapper);
     card.appendChild(btnDl);
     grid.appendChild(card);
+
+    // Also add to mobile preview
+    const mobContainer = document.getElementById('mobilePreviewContainer');
+    if (mobContainer) {
+      const mCard = card.cloneNode(true);
+      // Re-wire download button in clone
+      const mBtn = mCard.querySelector('.btn-download');
+      if (mBtn) { const si = slideId; const ii = idx+1; mBtn.onclick = () => downloadSlide(si, ii); }
+      mobContainer.appendChild(mCard);
+      // Write iframe in clone
+      const mIframe = mCard.querySelector('iframe');
+      if (mIframe) {
+        const mDoc = mIframe.contentDocument || mIframe.contentWindow.document;
+        mDoc.open(); mDoc.write(slideHtml); mDoc.close();
+      }
+    }
     
     // Write to iframe
     const doc = iframe.contentDocument || iframe.contentWindow.document;
