@@ -417,8 +417,16 @@ textarea.field-input { resize: vertical; min-height: 65px; line-height: 1.5; }
 @media (max-width: 900px) {
   .app { display: flex; flex-direction: column; height: auto; }
   .sidebar { width: 100%; max-width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
-  .main-content { display: none; } /* Desktop-Vorschau auf Mobile verstecken */
-  .caption-col { display: none; } /* Desktop-Caption auf Mobile verstecken */
+  .main-content { border-right: none; padding: 16px; min-height: 200px; }
+  .caption-col {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .caption-col .caption-box { min-height: 120px; flex: none; }
+  .slides-grid { flex-direction: column; }
+  .slide-wrapper iframe { width: 100% !important; max-width: 375px; }
+  .foto-pos-stage { aspect-ratio: 16/9; }
 }
 </style>
 </head>
@@ -524,6 +532,13 @@ textarea.field-input { resize: vertical; min-height: 65px; line-height: 1.5; }
         <input type="password" class="api-key-input" id="renderToken"
           placeholder="Geheimer Token" />
         <div class="api-hint">Railway-Server für 1080×1350px PNG-Export.</div>
+
+        <div class="section-label" style="margin-bottom:6px;margin-top:10px">ABZ-Logo (für PNG-Export)</div>
+        <div id="logoUploadArea" style="border:1.5px dashed var(--border);border-radius:7px;padding:10px 12px;font-size:11px;color:var(--text-dim);position:relative;cursor:pointer;">
+          <input type="file" accept="image/png,image/jpeg" id="logoFileInput" style="position:absolute;inset:0;opacity:0;cursor:pointer;">
+          <span id="logoUploadLabel">📎 Logo einmalig hochladen — wird im Browser gespeichert</span>
+        </div>
+        <div class="api-hint">Einmal hochladen, dann ist es dauerhaft im Browser für PNG-Exporte gespeichert.</div>
       </div>
     </div>
 
@@ -1210,10 +1225,10 @@ function getFieldDescription(field) {
     TITEL: 'Prägnanter Titel des Tipps/Themas',
     ENTFERNUNG: 'z.B. ca. 25 km entfernt',
     LABEL: 'z.B. Diese Woche oder Unser Tipp',
-    PUNKT1: 'Erster Stichpunkt mit kurzer Info',
-    PUNKT2: 'Zweiter Stichpunkt',
-    PUNKT3: 'Dritter Stichpunkt',
-    PUNKT4: 'Vierter Stichpunkt',
+    PUNKT1: 'Erster Stichpunkt — beginne mit passendem Emoji, dann kurzer Text',
+    PUNKT2: 'Zweiter Stichpunkt — beginne mit passendem Emoji, dann kurzer Text',
+    PUNKT3: 'Dritter Stichpunkt — beginne mit passendem Emoji, dann kurzer Text',
+    PUNKT4: 'Vierter Stichpunkt — beginne mit passendem Emoji, dann kurzer Text',
     FAZIT: 'Abschluss-Zeile, kurz und prägnant',
     HANDSCHRIFT: 'Kurze handschriftliche Zeile, z.B. Erinnerungen an...',
     TEXT: 'Fließtext, 2-4 Sätze',
@@ -1288,6 +1303,10 @@ function renderPreviews() {
 
 function buildSlideHtml(slideId) {
   let html = SLIDES[slideId]?.html || '';
+  // Use stored logo base64 for export (Railway can't load relative paths)
+  if (window._logoB64) {
+    html = html.replace(/src=\"logo_rahmen\.png\"/g, 'src="' + window._logoB64 + '"');
+  }
   
   // Replace all placeholders
   const prefix = getPrefix(slideId);
@@ -1453,7 +1472,27 @@ function applyMobileOrder() {
   });
   if (bottom) sidebar.appendChild(bottom);
 }
-window.addEventListener('DOMContentLoaded', applyMobileOrder);
+window.addEventListener('DOMContentLoaded', () => {
+  applyMobileOrder();
+  // Load stored logo
+  const storedLogo = localStorage.getItem('abz_logo_b64');
+  if (storedLogo) {
+    window._logoB64 = storedLogo;
+    document.getElementById('logoUploadLabel').textContent = '✓ Logo gespeichert — neu hochladen zum Ersetzen';
+  }
+  // Logo upload handler
+  document.getElementById('logoFileInput').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      window._logoB64 = ev.target.result;
+      localStorage.setItem('abz_logo_b64', ev.target.result);
+      document.getElementById('logoUploadLabel').textContent = '✓ Logo gespeichert (' + Math.round(ev.target.result.length/1024) + ' KB)';
+    };
+    reader.readAsDataURL(file);
+  });
+});
 </script>
 </body>
 </html>
