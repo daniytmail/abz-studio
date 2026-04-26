@@ -425,7 +425,7 @@ textarea.field-input { resize: vertical; min-height: 65px; line-height: 1.5; }
     </div>
 
     <!-- VARIANT -->
-    <div id="mob-variant" class="sidebar-section" style="margin-top:12px" id="variantSection" style="display:none">
+    <div id="variantSection" class="sidebar-section" style="margin-top:12px; display:none">
       <div class="section-label">Variante</div>
       <div class="variant-grid" id="variantGrid"></div>
     </div>
@@ -454,14 +454,14 @@ textarea.field-input { resize: vertical; min-height: 65px; line-height: 1.5; }
     </div>
 
     <!-- FIELDS (filled by AI) -->
-    <div id="mob-fields" class="sidebar-section" style="margin-top:14px" id="fieldsSection">
+    <div id="fieldsSection" class="sidebar-section" style="margin-top:14px">
       <div class="divider" style="margin-top:0; margin-bottom:14px"></div>
       <div class="section-label">Template-Felder</div>
       <div id="fieldsContainer" class="field-group"></div>
     </div>
 
     <!-- PREVIEW REFRESH BUTTON -->
-    <div id="mob-previewbtn" class="sidebar-section" style="margin-top:10px" id="previewBtnSection" style="display:none">
+    <div id="previewBtnSection" class="sidebar-section" style="margin-top:10px; display:none">
       <button class="btn-generate" id="btnPreview" onclick="renderPreviews()" style="background: var(--surface2); border: 1.5px solid var(--g); color: var(--g)">
         👁 Änderungen anwenden
       </button>
@@ -1251,12 +1251,12 @@ function applyMobileOrder() {
     'mob-branding',
     'mob-topic',
     'mob-format',
-    'mob-variant',
+    'variantSection',
     'mob-generate',
     'mob-preview-mobile',
     'mob-caption-mobile',
-    'mob-fields',
-    'mob-previewbtn',
+    'fieldsSection',
+    'previewBtnSection',
     'mob-api'
   ];
   // sidebar-bottom ans Ende
