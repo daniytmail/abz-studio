@@ -1382,7 +1382,7 @@ async function downloadSlide(slideId, slideNum) {
         'Content-Type': 'application/json',
         'x-render-token': renderToken,
       },
-      body: JSON.stringify({ html, width: 300, height: 375, deviceScaleFactor: 3.6 }),
+      body: JSON.stringify({ html, width: 1080, height: 1350 }),
     });
 
     if (res.status === 401) throw new Error('Token falsch — bitte prüfen');
