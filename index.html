@@ -1338,24 +1338,11 @@ function buildSlideHtml(slideId) {
 <head>
 <meta charset="UTF-8">
 ${FONT_LINK}
-<style>${TEMPLATE_CSS}
+<style>
+${TEMPLATE_CSS}
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body {
-  width: 1080px; height: 1350px;
-  overflow: hidden; background: transparent;
-}
-body {
-  display: flex; align-items: flex-start; justify-content: flex-start;
-}
-.s {
-  width: 300px !important;
-  height: 375px !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  transform: scale(3.6);
-  transform-origin: top left;
-  flex-shrink: 0;
-}
+html, body { width: 300px; height: 375px; overflow: hidden; background: transparent; }
+.s { border-radius: 0 !important; box-shadow: none !important; }
 </style>
 </head>
 <body>${html}</body>
@@ -1395,7 +1382,7 @@ async function downloadSlide(slideId, slideNum) {
         'Content-Type': 'application/json',
         'x-render-token': renderToken,
       },
-      body: JSON.stringify({ html, width: 1080, height: 1350 }),
+      body: JSON.stringify({ html, width: 300, height: 375, deviceScaleFactor: 3.6 }),
     });
 
     if (res.status === 401) throw new Error('Token falsch — bitte prüfen');
