@@ -1340,19 +1340,22 @@ function buildSlideHtml(slideId) {
 ${FONT_LINK}
 <style>${TEMPLATE_CSS}
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { width: 1080px; height: 1350px; overflow: hidden; background: transparent; }
-body { display: flex; align-items: center; justify-content: center; }
+html, body {
+  width: 1080px; height: 1350px;
+  overflow: hidden; background: transparent;
+}
+body {
+  display: flex; align-items: flex-start; justify-content: flex-start;
+}
 .s {
-  width: 1080px !important;
-  height: 1350px !important;
+  width: 300px !important;
+  height: 375px !important;
   border-radius: 0 !important;
   box-shadow: none !important;
+  transform: scale(3.6);
+  transform-origin: top left;
   flex-shrink: 0;
 }
-.logo { right: 46px !important; bottom: 46px !important; width: 100px !important; height: 100px !important; }
-.handle { left: 52px !important; bottom: 52px !important; font-size: 32px !important; letter-spacing: 1px !important; }
-.pill { font-size: 32px !important; padding: 14px 40px !important; border-radius: 60px !important; letter-spacing: 1px !important; }
-.blob { pointer-events: none; }
 </style>
 </head>
 <body>${html}</body>
