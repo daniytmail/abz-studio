@@ -439,12 +439,6 @@ textarea.field-input { resize: vertical; min-height: 65px; line-height: 1.5; }
       </button>
     </div>
 
-    <!-- MOBILE PREVIEW PLACEHOLDER (nur Mobile, nach Generieren) -->
-    <div id="mob-preview-mobile" class="sidebar-section" style="margin-top:14px; display:none">
-      <div class="divider" style="margin-top:0; margin-bottom:14px"></div>
-      <div id="mobilePreviewContainer"></div>
-    </div>
-
     <!-- MOBILE CAPTION (nur Mobile) -->
     <div id="mob-caption-mobile" class="sidebar-section" style="margin-top:14px; display:none">
       <div class="divider" style="margin-top:0; margin-bottom:14px"></div>
@@ -1035,13 +1029,6 @@ function renderPreviews() {
   // Show download-all button only when multiple slides
   const dlAll = document.getElementById('btnDownloadAll');
   if (dlAll) dlAll.style.display = slideIds.length > 1 ? 'flex' : 'none';
-  
-  // Show mobile preview section
-  const mobPrev = document.getElementById('mob-preview-mobile');
-  if (mobPrev) {
-    mobPrev.style.display = 'block';
-    document.getElementById('mobilePreviewContainer').innerHTML = '';
-  }
 
   slideIds.forEach((slideId, idx) => {
     const slideHtml = buildSlideHtml(slideId);
@@ -1073,23 +1060,7 @@ function renderPreviews() {
     card.appendChild(wrapper);
     card.appendChild(btnDl);
     grid.appendChild(card);
-
-    // Also add to mobile preview
-    const mobContainer = document.getElementById('mobilePreviewContainer');
-    if (mobContainer) {
-      const mCard = card.cloneNode(true);
-      // Re-wire download button in clone
-      const mBtn = mCard.querySelector('.btn-download');
-      if (mBtn) { const si = slideId; const ii = idx+1; mBtn.onclick = () => downloadSlide(si, ii); }
       mobContainer.appendChild(mCard);
-      // Write iframe in clone
-      const mIframe = mCard.querySelector('iframe');
-      if (mIframe) {
-        const mDoc = mIframe.contentDocument || mIframe.contentWindow.document;
-        mDoc.open(); mDoc.write(slideHtml); mDoc.close();
-      }
-    }
-    
     // Write to iframe
     const doc = iframe.contentDocument || iframe.contentWindow.document;
     doc.open();
@@ -1253,7 +1224,6 @@ function applyMobileOrder() {
     'mob-format',
     'variantSection',
     'mob-generate',
-    'mob-preview-mobile',
     'mob-caption-mobile',
     'fieldsSection',
     'previewBtnSection',
