@@ -1328,8 +1328,6 @@ function buildSlideHtml(slideId) {
   // Absolute URL for logo so Railway/Puppeteer can load it
   html = html.replaceAll('src="logo_rahmen.png"', 'src="https://daniytmail.github.io/abz-studio/logo_rahmen.png"');
   
-  // Replace logo placeholder with actual logo (logo is already embedded in slide HTML)
-  // Wrap in full document
   return `<!DOCTYPE html>
 <html>
 <head>
