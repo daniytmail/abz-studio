@@ -1171,12 +1171,21 @@ WICHTIG für diese Variante: Alle Elemente müssen auf eine quadratische Slide p
 - TITEL: maximal 5-6 Wörter, max. 40 Zeichen
 - TEXT: maximal 2-3 Sätze, max. 130 Zeichen gesamt — danach wird der Text abgeschnitten
 - FAZIT: maximal 1 kurze Zeile, max. 45 Zeichen` : '';
+
+  const isFreizeittipp = formatLabel === 'Freizeittipp';
+  const freizeittippHint = isFreizeittipp ? `
+WICHTIG für Freizeittipp — PUNKT-Felder (PUNKT1–PUNKT4):
+- Das Template setzt bereits ein Emoji vor jeden Punkt — schreibe KEIN Emoji in PUNKT-Felder
+- PUNKT-Felder enthalten NUR reinen Text, ohne Emojis am Anfang oder Ende
+- Korrekt: "Historische Altstadt mit Fachwerkbauten"
+- FALSCH: "🏰 Historische Altstadt" oder "Historische Altstadt 🏰"` : '';
+
   const fieldDescriptions = fields.map(f => `"${f}": "${getFieldDescription(f)}"`).join(',\n  ');
   
   return `THEMA/EINGABE: ${topic}
 
 FORMAT: ${formatLabel} (Variante ${variant})
-${photoSplitHint}${fullSlideHint}
+${photoSplitHint}${fullSlideHint}${freizeittippHint}
 Erstelle:
 1. Die Template-Felder passend zum Thema
 2. Eine fertige Instagram-Caption im ABZ-Stil
@@ -1311,6 +1320,9 @@ function buildSlideHtml(slideId) {
   
   // Clear remaining placeholders
   html = html.replace(/{{[^}]+}}/g, '');
+  
+  // Absolute URL for logo so Railway/Puppeteer can load it
+  html = html.replaceAll('src="logo_rahmen.png"', 'src="https://daniytmail.github.io/abz-studio/logo_rahmen.png"');
   
   // Replace logo placeholder with actual logo (logo is already embedded in slide HTML)
   // Wrap in full document
