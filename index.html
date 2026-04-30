@@ -480,6 +480,29 @@ textarea.field-input { resize: vertical; min-height: 65px; line-height: 1.5; }
       <div class="variant-grid" id="variantGrid"></div>
     </div>
 
+    <!-- FOTO UPLOAD (shown only for photo variants) -->
+    <div id="fotoSection" class="sidebar-section" style="margin-top:12px; display:none">
+      <div class="section-label">Foto</div>
+      <div class="foto-upload" id="fotoUploadBtn">
+        <input type="file" accept="image/*" onchange="handlePhoto(event)">
+        <div>📷 Foto hochladen</div>
+      </div>
+      <div class="foto-position-editor" id="fotoPosEditor" style="margin-top:10px">
+        <div class="foto-pos-label">📐 Bildausschnitt & Zoom</div>
+        <div class="foto-pos-stage" id="fotoPosStage">
+          <img class="foto-pos-img" id="fotoPosImg" draggable="false">
+          <div class="foto-pos-crosshair"></div>
+        </div>
+        <div style="display:flex; gap:6px; padding:8px 12px 4px; align-items:center;">
+          <button onclick="fotoZoom=Math.max(0.5,fotoZoom-0.1);applyFotoPos();schedulePreview();" style="flex:1;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:5px;font-size:14px;cursor:pointer;">−</button>
+          <span id="fotoZoomLabel" style="font-size:10px;color:var(--text-dim);min-width:36px;text-align:center;">100%</span>
+          <button onclick="fotoZoom=Math.min(3.0,fotoZoom+0.1);applyFotoPos();schedulePreview();" style="flex:1;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:5px;font-size:14px;cursor:pointer;">+</button>
+          <button onclick="fotoPosX=50;fotoPosY=50;fotoZoom=1.0;applyFotoPos();schedulePreview();" style="flex:2;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);border-radius:5px;padding:5px;font-size:10px;cursor:pointer;">↺ Reset</button>
+        </div>
+        <div class="foto-pos-hint">Ziehen zum Verschieben · Scrollen oder +/− zum Zoomen</div>
+      </div>
+    </div>
+
     <!-- GENERATE BUTTON -->
     <div id="mob-generate" class="sidebar-section" style="margin-top:14px">
       <div class="status" id="status"></div>
@@ -728,6 +751,13 @@ function selectVariant(btn) {
   activeVariant = btn.dataset.variant;
   fieldValues = {};
   photoBase64 = null;
+  const hasPhoto = FORMAT_CONFIG[activeFormat]?.variants[activeVariant]?.hasPhoto || false;
+  document.getElementById('fotoSection').style.display = hasPhoto ? 'block' : 'none';
+  if (!hasPhoto) {
+    // Reset editor visibility if switching to non-photo variant
+    const editor = document.getElementById('fotoPosEditor');
+    if (editor) editor.classList.remove('visible');
+  }
   renderFields();
   updateGenerateBtn();
 }
@@ -747,32 +777,7 @@ function renderFields() {
     div.appendChild(label);
     
     if (field === 'FOTO') {
-      const upload = document.createElement('div');
-      upload.className = 'foto-upload';
-      upload.innerHTML = `<input type="file" accept="image/*" onchange="handlePhoto(event)">
-        <div>📷 Foto hochladen</div>
-        <img id="fotoPreview" class="foto-preview" style="display:none">`;
-      div.appendChild(upload);
-
-      // Photo position editor
-      const posEditor = document.createElement('div');
-      posEditor.className = 'foto-position-editor';
-      posEditor.id = 'fotoPosEditor';
-      posEditor.innerHTML = `
-        <div class="foto-pos-label">📐 Bildausschnitt & Zoom</div>
-        <div class="foto-pos-stage" id="fotoPosStage">
-          <img class="foto-pos-img" id="fotoPosImg" draggable="false">
-          <div class="foto-pos-crosshair"></div>
-        </div>
-        <div style="display:flex; gap:6px; padding:8px 12px 4px; align-items:center;">
-          <button onclick="fotoZoom=Math.max(0.5,fotoZoom-0.1);applyFotoPos();schedulePreview();" style="flex:1;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:5px;font-size:14px;cursor:pointer;">−</button>
-          <span id="fotoZoomLabel" style="font-size:10px;color:var(--text-dim);min-width:36px;text-align:center;">100%</span>
-          <button onclick="fotoZoom=Math.min(3.0,fotoZoom+0.1);applyFotoPos();schedulePreview();" style="flex:1;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:5px;font-size:14px;cursor:pointer;">+</button>
-          <button onclick="fotoPosX=50;fotoPosY=50;fotoZoom=1.0;applyFotoPos();schedulePreview();" style="flex:2;background:var(--surface);border:1px solid var(--border);color:var(--text-dim);border-radius:5px;padding:5px;font-size:10px;cursor:pointer;">↺ Reset</button>
-        </div>
-        <div class="foto-pos-hint">Ziehen zum Verschieben · Scrollen oder +/− zum Zoomen</div>`;
-      div.appendChild(posEditor);
-      initFotoPosEditor();
+      return; // Upload + editor now live in fotoSection above generate button
     } else if (MULTILINE_FIELDS.has(field)) {
       const ta = document.createElement('textarea');
       ta.className = 'field-input';
@@ -927,8 +932,6 @@ function handlePhoto(event) {
     photoBase64 = e.target.result;
     fieldValues['FOTO'] = e.target.result;
     fotoPosX = 50; fotoPosY = 50; fotoZoom = 1.0; // reset on new photo
-    const preview = document.getElementById('fotoPreview');
-    if (preview) { preview.src = e.target.result; preview.style.display = 'block'; }
     setupFotoPosStage(e.target.result);
     renderPreviews();
   };
