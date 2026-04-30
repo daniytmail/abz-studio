@@ -1307,11 +1307,15 @@ function buildSlideHtml(slideId) {
     let value = fieldValues[field] || '';
     if (field === 'FOTO') {
       if (photoBase64) {
-        // Foto als background-image in den class="foto" div einsetzen
-        html = html.replace(
-          /<div class="foto"[^>]*>.*?<\/div>/s,
-          `<div class="foto" style="position:relative;inset:auto;width:100%;height:100%;background-image:url('${photoBase64}');background-size:${Math.round(fotoZoom*100)}%;background-position:${fotoPosX}% ${fotoPosY}%;background-repeat:no-repeat;font-size:10px;"></div>`
-        );
+        // Foto als background-image einsetzen, bestehende Inline-Styles erhalten
+        html = html.replace(/<div class="foto"([^>]*)>.*?<\/div>/s, (match, existingStyle) => {
+          // Existing style may contain layout-critical properties (height, border-radius etc.)
+          const baseStyle = existingStyle.replace(/\s*style="([^"]*)"/, '').trim();
+          const inlineStyle = existingStyle.match(/style="([^"]*)"/)?.[1] || '';
+          const photoStyle = `background-image:url('${photoBase64}');background-size:${Math.round(fotoZoom*100)}%;background-position:${fotoPosX}% ${fotoPosY}%;background-repeat:no-repeat;`;
+          const mergedStyle = inlineStyle ? inlineStyle.replace(/;?$/, ';') + photoStyle : photoStyle;
+          return `<div class="foto"${baseStyle ? ' ' + baseStyle : ''} style="${mergedStyle}"></div>`;
+        });
       }
       return; // nicht als Text-Placeholder ersetzen
     }
