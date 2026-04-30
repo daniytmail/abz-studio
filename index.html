@@ -528,6 +528,23 @@ textarea.field-input { resize: vertical; min-height: 65px; line-height: 1.5; }
       </button>
     </div>
 
+    <!-- MOBILE PREVIEW -->
+    <div id="mob-preview-mobile" class="sidebar-section" style="margin-top:14px; display:none">
+      <div class="divider" style="margin-top:0; margin-bottom:14px"></div>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+        <div class="section-label" style="margin-bottom:0">Vorschau</div>
+        <button class="btn-download-all" id="btnDownloadAllMobile" onclick="downloadAllSlides()" style="display:none; font-size:10px; padding:6px 10px;">⬇ Alle laden</button>
+      </div>
+      <div id="slidesGridMobile" style="display:flex; flex-direction:column; gap:14px;"></div>
+    </div>
+
+    <!-- MOBILE CAPTION -->
+    <div id="mob-caption-mobile" class="sidebar-section" style="margin-top:14px; display:none">
+      <div class="section-label">Instagram Caption</div>
+      <div class="caption-box" id="captionBoxMobile" style="margin-top:8px; min-height:80px;"><span class="caption-empty">Caption erscheint hier…</span></div>
+      <button class="btn-copy" style="margin-top:8px; width:100%;" onclick="copyCaptionMobile()">📋 Caption kopieren</button>
+    </div>
+
     <!-- API ACCORDION -->
     <div id="mob-api" class="api-accordion">
       <button class="api-accordion-toggle" onclick="toggleApiAccordion()">
@@ -1260,41 +1277,46 @@ function renderPreviews() {
   const dlAll = document.getElementById('btnDownloadAll');
   if (dlAll) dlAll.style.display = slideIds.length > 1 ? 'flex' : 'none';
 
-  slideIds.forEach((slideId, idx) => {
+  // Mobile grid
+  const mobileGrid = document.getElementById('slidesGridMobile');
+  const mobilePreviewSec = document.getElementById('mob-preview-mobile');
+  if (mobileGrid) { mobileGrid.innerHTML = ''; }
+  if (mobilePreviewSec) mobilePreviewSec.style.display = 'block';
+  const dlAllMob = document.getElementById('btnDownloadAllMobile');
+  if (dlAllMob) dlAllMob.style.display = slideIds.length > 1 ? 'flex' : 'none';
+
+  function makeCard(slideId, idx, targetGrid) {
     const slideHtml = buildSlideHtml(slideId);
-    
     const card = document.createElement('div');
     card.className = 'slide-card';
-    
     const labelDiv = document.createElement('div');
     labelDiv.className = 'slide-card-label';
     labelDiv.textContent = slideIds.length > 1 ? 'Slide ' + (idx + 1) : 'Vorschau';
-    
     const wrapper = document.createElement('div');
     wrapper.className = 'slide-wrapper';
-    
     const iframe = document.createElement('iframe');
     iframe.width = 300;
     iframe.height = 375;
     iframe.style.width = '300px';
     iframe.style.height = '375px';
-    
     wrapper.appendChild(iframe);
-    
     const btnDl = document.createElement('button');
     btnDl.className = 'btn-download';
     btnDl.innerHTML = '⬇ PNG herunterladen';
     btnDl.onclick = () => downloadSlide(slideId, idx + 1);
-    
     card.appendChild(labelDiv);
     card.appendChild(wrapper);
     card.appendChild(btnDl);
-    grid.appendChild(card);
-    // Write to iframe
+    targetGrid.appendChild(card);
     const doc = iframe.contentDocument || iframe.contentWindow.document;
     doc.open();
     doc.write(slideHtml);
     doc.close();
+  }
+
+  slideIds.forEach((slideId, idx) => {
+    makeCard(slideId, idx, grid);
+    if (mobileGrid) makeCard(slideId, idx, mobileGrid);
   });
 }
 
@@ -1418,6 +1440,17 @@ async function copyCaption() {
   }, 2000);
 }
 
+function copyCaptionMobile() {
+  if (!captionText) return;
+  navigator.clipboard.writeText(captionText);
+  const btns = document.querySelectorAll('#mob-caption-mobile .btn-copy');
+  btns.forEach(btn => {
+    btn.textContent = '✓ Kopiert!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 Caption kopieren'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
 // ── ACCORDION ─────────────────────────────────────────────────────────────
 function toggleApiAccordion() {
   const body = document.getElementById('apiAccordionBody');
@@ -1457,9 +1490,12 @@ function applyMobileOrder() {
     'mob-topic',
     'mob-format',
     'variantSection',
+    'fotoSection',
     'mob-generate',
     'fieldsSection',
     'previewBtnSection',
+    'mob-preview-mobile',
+    'mob-caption-mobile',
     'mob-api'
   ];
   // sidebar-bottom ans Ende
